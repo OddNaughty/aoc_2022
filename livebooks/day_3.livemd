@@ -1,0 +1,80 @@
+# Day 3
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"3","session_secret":"AOC_SESSION_ID","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} = KinoAOC.download_puzzle("2022", "3", System.fetch_env!("LB_AOC_SESSION_ID"))
+```
+
+```elixir
+test_input = """
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+"""
+
+puzzle_input
+|> String.split()
+|> Enum.map(fn string ->
+  half_string_size = String.length(string) |> div(2)
+  <<string_1::binary-size(half_string_size), string_2::binary>> = string
+  [part1, part2] = for s <- [string_1, string_2], do: s |> String.codepoints() |> MapSet.new()
+
+  MapSet.intersection(part1, part2)
+  |> MapSet.to_list()
+  |> List.first()
+  |> then(fn
+    <<v::utf8>> when v >= 97 -> v - 96
+    <<v::utf8>> -> v - 38
+  end)
+end)
+|> Enum.sum()
+```
+
+```elixir
+test_input = """
+vJrwpWtwJgWrhcsFMMfFFhFp
+jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL
+PmmdzqPrVvPwwTWBwg
+wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn
+ttgJtRGJQctTZtZT
+CrZsJsPPZsGzwwsLwLmpwMDw
+"""
+
+puzzle_input
+|> String.split()
+|> Enum.chunk_every(3)
+|> Enum.map(fn strings ->
+  [s1, s2, s3] =
+    for string <- strings do
+      string
+      |> String.codepoints()
+      |> MapSet.new()
+    end
+
+  MapSet.intersection(s1, s2)
+  |> MapSet.intersection(s3)
+  |> MapSet.to_list()
+  |> List.first()
+  |> then(fn
+    <<v::utf8>> when v >= 97 -> v - 96
+    <<v::utf8>> -> v - 38
+  end)
+end)
+|> Enum.sum()
+```
+
+```elixir
+
+```
