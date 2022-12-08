@@ -1,0 +1,70 @@
+# Day 6
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"6","session_secret":"AOC_SESSION_ID","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} = KinoAOC.download_puzzle("2022", "6", System.fetch_env!("LB_AOC_SESSION_ID"))
+```
+
+```elixir
+defmodule Day6 do
+  defguard all_different(a, b, c, d)
+           when a != b and a != c and a != d and
+                  b != c and b != d and
+                  c != d
+
+  def part_1(input), do: part_1(input, 0)
+
+  def part_1(<<a::utf8, b::utf8, c::utf8, d::utf8, _::binary>>, pos)
+      when all_different(a, b, c, d),
+      do: pos + 4
+
+  def part_1(<<_::utf8, rest::binary>>, pos), do: part_1(rest, pos + 1)
+
+  def part_2(input), do: part_2(input, 0)
+
+  def part_2(<<s::binary-size(14), _::binary>> = input, pos) do
+    <<_::utf8, rest::binary>> = input
+    single_chars = to_charlist(s) |> Enum.uniq()
+
+    if length(single_chars) == 14 do
+      pos + 14
+    else
+      part_2(rest, pos + 1)
+    end
+  end
+end
+```
+
+```elixir
+test_input1 = "mjqjpqmgbljsphdztnvjfqwrcgsmlb"
+Day6.part_1(puzzle_input)
+```
+
+```elixir
+test_input1 = "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw"
+Day6.part_2(puzzle_input)
+```
+
+```elixir
+Enum.reduce(instructions, stacks, fn %{from: from, to: to, nb: count}, stacks ->
+  to_stack = Enum.take(stacks[from], count) ++ stacks[to]
+  from_stack = Enum.drop(stacks[from], count)
+
+  %{
+    stacks
+    | from => from_stack,
+      to => to_stack
+  }
+end)
+|> Enum.reduce([], fn {_k, [first_letter | _]}, acc -> [first_letter | acc] end)
+|> Enum.reverse()
+```
