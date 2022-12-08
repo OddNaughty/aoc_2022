@@ -3,7 +3,7 @@ defmodule AdventOfCode2022.Day2 do
     strategy_guide_book
     |> String.split()
     |> Enum.chunk_every(2)
-    |> Enum.map(& get_score(&1))
+    |> Enum.map(&get_score(&1))
     |> Enum.sum()
   end
 
@@ -11,7 +11,7 @@ defmodule AdventOfCode2022.Day2 do
     strategy_guide_book
     |> String.split()
     |> Enum.chunk_every(2)
-    |> Enum.map(& get_score_part_2(&1))
+    |> Enum.map(&get_score_part_2(&1))
     |> Enum.sum()
   end
 

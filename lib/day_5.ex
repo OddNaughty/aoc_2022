@@ -22,10 +22,11 @@ defmodule AdventOfCode2022.Day5 do
     Enum.reduce(instructions, stacks, fn %{from: from, to: to, nb: count}, stacks ->
       to_stack = Enum.take(stacks[from], count) ++ stacks[to]
       from_stack = Enum.drop(stacks[from], count)
+
       %{
-        stacks |
-        from => from_stack,
-        to => to_stack
+        stacks
+        | from => from_stack,
+          to => to_stack
       }
     end)
     |> Enum.reduce([], fn {_k, [first_letter | _]}, acc -> [first_letter | acc] end)

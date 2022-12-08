@@ -18,6 +18,6 @@ defmodule AdventOfCode.Day1Test do
   end
 
   test "part 2 input", ctx do
-    assert Day1.part_2(ctx.input) == 199357
+    assert Day1.part_2(ctx.input) == 199_357
   end
 end
