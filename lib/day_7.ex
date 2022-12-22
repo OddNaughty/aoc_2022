@@ -107,14 +107,31 @@ defmodule AdventOfCode2022.Day7 do
   end
 
   def parse_command(["cd /"], state), do: Map.put(state, :cwd, "/")
+
+  def parse_command(["cd .."], %{cwd: cwd, dir: _} = state) do
+    new_path =
+      String.split(cwd, "/", trim: true)
+      |> Enum.drop(-1)
+      |> Enum.join("/")
+
+    new_path =
+      case new_path do
+        "/" -> "/"
+        path -> "/#{path}/"
+      end
+
+    Map.put(state, :cwd, new_path)
+  end
+
   def parse_command(["cd " <> path], %{cwd: cwd} = state) do
     Map.put(state, :cwd, cwd <> path <> "/")
   end
 
+
   # defp parse_command_2(["cd .."]), do: raise("Not implemented yet")
   # defp parse_command_2(["cd " <> path], %{cwd: cwd} = state), do: Map.put(state, :cwd, state <> "/" <> path)
 
-  def parse_command_camille(["cd /"], state), do: Map.put(state, :cwd, ["/"])
+  def parse_command_camille(["cd /"], state), do: Map.put(state, :cwd, [""])
   def parse_command_camille(["cd .."], %{cwd: [_ | cwd]} = state), do: Map.put(state, :cwd, cwd)
 
   def parse_command_camille(["cd " <> path], %{cwd: cwd} = state),
@@ -135,7 +152,7 @@ defmodule AdventOfCode2022.Day7 do
 
         file ->
           [filesize, filename] = String.split(file)
-          %File{path: filename, size: filesize}
+          %File{path: filename, size: String.to_integer(filesize)}
       end)
 
     put_in(state, [Access.key!(:dir), Access.key!(:children)], children)
@@ -154,7 +171,6 @@ defmodule AdventOfCode2022.Day7 do
   #   ["ls", "584 i"],
   #   ["cd .."],
   #   ["cd .."], ["cd d"], ["ls", "4060174 j", "8033020 d.log", "5626152 d.ext", "7214296 k"]]
-
   # Possible commands
   # ls
   # cd [path]

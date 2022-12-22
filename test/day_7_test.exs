@@ -61,19 +61,74 @@ defmodule AdventOfCode.Day7Test do
              })
   end
 
+  test "parse ls from a subdirectory", _ctx do
+    assert %{
+             cwd: "/a/",
+             dir: %AdventOfCode2022.Day7.Directory{
+               path: "/",
+               children: [
+                 %AdventOfCode2022.Day7.Directory{
+                   path: "/a/",
+                   children: [
+                     %Directory{
+                       path: "/a/e/",
+                       children: []
+                     },
+                     %File{path: "/a/f", size: 29116},
+                     %File{path: "/a/g", size: 2557},
+                     %File{path: "/a/h.lst", size: 62596}
+                   ]
+                 },
+                 %AdventOfCode2022.Day7.File{path: "b.txt", size: 14_848_514},
+                 %AdventOfCode2022.Day7.File{path: "c.dat", size: 8_504_156},
+                 %AdventOfCode2022.Day7.Directory{path: "d", children: []}
+               ]
+             }
+           } ==
+             Day7.parse_command(["ls", "dir e", "29116 f", "2557 g", "62596 h.lst"], %{
+               cwd: "/a/",
+               dir: %AdventOfCode2022.Day7.Directory{
+                 path: "/",
+                 children: [
+                   %AdventOfCode2022.Day7.Directory{path: "a", children: []},
+                   %AdventOfCode2022.Day7.File{path: "b.txt", size: 14_848_514},
+                   %AdventOfCode2022.Day7.File{path: "c.dat", size: 8_504_156},
+                   %AdventOfCode2022.Day7.Directory{path: "d", children: []}
+                 ]
+               }
+             })
+  end
+
   test "parse cd a", _ctx do
-    %{cwd: "/a/"} = Day7.parse_command(["cd a"], %{
-      cwd: "/",
-      dir: %AdventOfCode2022.Day7.Directory{
-       path: "/",
-       children: [
-        %AdventOfCode2022.Day7.Directory{path: "a", children: []},
-        %AdventOfCode2022.Day7.File{path: "b.txt", size: "14848514"},
-        %AdventOfCode2022.Day7.File{path: "c.dat", size: "8504156"},
-        %AdventOfCode2022.Day7.Directory{path: "d", children: []}
-      ]
-    }
-    })
+    %{cwd: "/a/"} =
+      Day7.parse_command(["cd a"], %{
+        cwd: "/",
+        dir: %AdventOfCode2022.Day7.Directory{
+          path: "/",
+          children: [
+            %AdventOfCode2022.Day7.Directory{path: "a", children: []},
+            %AdventOfCode2022.Day7.File{path: "b.txt", size: "14848514"},
+            %AdventOfCode2022.Day7.File{path: "c.dat", size: "8504156"},
+            %AdventOfCode2022.Day7.Directory{path: "d", children: []}
+          ]
+        }
+      })
+  end
+
+  test "parse cd ..", _ctx do
+    %{cwd: "/a/"} =
+      Day7.parse_command(["cd .."], %{
+        cwd: "/a/e/",
+        dir: %AdventOfCode2022.Day7.Directory{
+          path: "/",
+          children: [
+            %AdventOfCode2022.Day7.Directory{path: "a", children: []},
+            %AdventOfCode2022.Day7.File{path: "b.txt", size: "14848514"},
+            %AdventOfCode2022.Day7.File{path: "c.dat", size: "8504156"},
+            %AdventOfCode2022.Day7.Directory{path: "d", children: []}
+          ]
+        }
+      })
   end
 
   # test "part 1 test input", ctx do
